@@ -75,10 +75,9 @@ function currentUser() { return state.users.find(u => u.id === state.viewUserId)
 function hoursForUser(userId) { return state.hours.filter(h => h.userId === userId); }
 function leaveForUser(userId) { return state.leave.filter(l => l.userId === userId); }
 
-// Hours per workday for a user (norm spread over their actual working days)
+// Standard workday = 8 hours (ongeacht weeknorm of deeltijd)
 function dailyQuota(user) {
-  const wd = (user.workdays && user.workdays.length) ? user.workdays.length : 5;
-  return user.weekNorm / wd;
+  return 8;
 }
 
 // Holidays that fall on this user's workdays in a given week
@@ -146,6 +145,24 @@ function computeSaldo(userId) {
 function leaveUsedThisYear(userId) {
   const year = currentYear();
   return leaveForUser(userId).filter(l => new Date(l.date).getFullYear() === year).reduce((a, l) => a + Number(l.hours), 0);
+}
+
+// Effectief verlofbudget voor dit jaar: pro-rata in het eerste jaar
+// (vanaf startDate tot eind dec), volledig in volgende jaren.
+function effectiveLeaveHours(user) {
+  const year = currentYear();
+  const fullYear = Number(user.leaveHoursPerYear) || 0;
+  const startDate = state.settings.startDate;
+  if (!startDate) return fullYear;
+  const startYear = new Date(startDate).getFullYear();
+  if (year > startYear) return fullYear;
+  if (year < startYear) return 0;
+  // Zelfde jaar als startDate → pro-rata op weken
+  const startMonday = new Date(getMondayOfWeek(startDate));
+  const yearEnd = new Date(year, 11, 31);
+  const weeksRemaining = Math.max(1, Math.ceil((yearEnd - startMonday) / (7 * 86400000)));
+  const weeksTotal = 52;
+  return Math.round(fullYear * Math.min(1, weeksRemaining / weeksTotal));
 }
 function fmt(n) { return (n >= 0 ? '+' : '') + Number(n).toFixed(1).replace(/\.0$/, ''); }
 function fmtU(n) { return Number(n).toFixed(1).replace(/\.0$/, ''); }
@@ -256,7 +273,8 @@ function renderDashboard() {
   $('#dbSaldo').innerHTML = `${fmt(saldo)}<span class="suffix">u</span>`;
 
   const used = leaveUsedThisYear(u.id);
-  $('#dbLeaveLeft').textContent = fmtU(u.leaveHoursPerYear - used);
+  const effectiveLeave = effectiveLeaveHours(u);
+  $('#dbLeaveLeft').textContent = fmtU(effectiveLeave - used);
 
   // Week chart — last 8 weeks
   const weeks = [];
@@ -304,7 +322,7 @@ function renderDashboard() {
 
 function renderLeavePie(u) {
   const used = leaveUsedThisYear(u.id);
-  const total = u.leaveHoursPerYear;
+  const total = effectiveLeaveHours(u);
   const pct = total > 0 ? Math.min(1, used / total) : 0;
 
   const svg = $('#leavePie');
@@ -400,9 +418,10 @@ function renderVerlof() {
   if (!u) return;
   if (!$('#lDate').value) $('#lDate').value = today();
   const used = leaveUsedThisYear(u.id);
-  $('#vTotal').textContent = u.leaveHoursPerYear;
+  const effectiveLeave = effectiveLeaveHours(u);
+  $('#vTotal').textContent = effectiveLeave;
   $('#vUsed').textContent = Math.round(used);
-  $('#vLeft').textContent = Math.round(u.leaveHoursPerYear - used);
+  $('#vLeft').textContent = Math.round(effectiveLeave - used);
 
   const list = $('#leaveList');
   list.innerHTML = '';
@@ -438,7 +457,7 @@ function renderTeam() {
   state.users.forEach(u => {
     const wh = weekHours(u.id, thisWeek);
     const saldo = computeSaldo(u.id);
-    const leaveLeft = u.leaveHoursPerYear - leaveUsedThisYear(u.id);
+    const leaveLeft = effectiveLeaveHours(u) - leaveUsedThisYear(u.id);
     const card = document.createElement('div');
     card.className = 'team-card';
     card.style.color = u.color;
@@ -561,8 +580,8 @@ function renderSettings() {
         <input type="number" data-id="${u.id}" data-field="weekNorm" value="${u.weekNorm}" />
       </div>
       <div>
-        <label>Verlof per jaar (u)</label>
-        <input type="number" data-id="${u.id}" data-field="leaveHoursPerYear" value="${u.leaveHoursPerYear}" />
+        <label>Verlof vol jaar (u)</label>
+        <input type="number" data-id="${u.id}" data-field="leaveHoursPerYear" value="${u.leaveHoursPerYear}" title="Volledig jaarmaximum. Eerste jaar wordt automatisch pro-rata berekend vanaf startdatum." />
       </div>
       <div class="workdays-field">
         <label>Vaste werkdagen</label>
