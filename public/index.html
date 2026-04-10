@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uren & Verlof — Agensea</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Mesh background blobs -->
+  <div class="mesh-blob mesh-1"></div>
+  <div class="mesh-blob mesh-2"></div>
+
+  <header class="topbar">
+    <a href="#" class="brand">
+      <img src="/agensea-logo.svg" alt="Agensea" class="brand-logo" />
+      <span class="brand-divider"></span>
+      <span class="brand-sub">Uren & Verlof</span>
+    </a>
+    <nav class="user-switch" id="userSwitch"></nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">
+        <span class="eyebrow-line"></span>
+        Intern dashboard
+      </span>
+      <h1 class="hero-title">
+        <span id="heroIntro">Hey,</span> <span class="accent italic underline" id="heroName">daar</span><br/>
+        hoe sta je <span class="accent">ervoor?</span>
+      </h1>
+      <p class="hero-sub">Registreer je uren, neem verlof op en houd je saldo bij. Transparant tussen vennoten, zonder gedoe.</p>
+    </div>
+  </section>
+
+  <main>
+    <!-- VIEW BAR -->
+    <div class="view-bar" id="viewBar"></div>
+    <div class="readonly-banner" id="readOnlyBanner"></div>
+
+    <!-- TAB NAV -->
+    <section class="tabs">
+      <button data-tab="dashboard" class="tab active">Dashboard</button>
+      <button data-tab="invoer" class="tab">Uren invoeren</button>
+      <button data-tab="verlof" class="tab">Verlof</button>
+      <button data-tab="team" class="tab">Team</button>
+      <button data-tab="instellingen" class="tab">Instellingen</button>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="tab-dashboard" class="panel active">
+      <!-- Hero stats (dark) -->
+      <div class="stats-dark">
+        <div class="stat">
+          <div class="stat-value counter"><span id="dbWeekHours">0</span><span class="suffix">u</span></div>
+          <div class="stat-label">Deze week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value counter" id="dbWeekDiff">0</div>
+          <div class="stat-label">Verschil v. norm</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value counter" id="dbSaldo">0</div>
+          <div class="stat-label">Totaal saldo</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value counter"><span id="dbLeaveLeft">0</span><span class="suffix">u</span></div>
+          <div class="stat-label">Verlof resterend</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="block block-chart">
+          <div class="block-head">
+            <span class="block-label">Uren per week</span>
+            <span class="block-hint">Laatste 8 weken</span>
+          </div>
+          <div id="weekChart" class="chart"></div>
+        </div>
+
+        <div class="block">
+          <div class="block-head">
+            <span class="block-label">Verlof verdeling</span>
+            <span class="block-hint">Dit jaar</span>
+          </div>
+          <div class="pie-wrap">
+            <svg id="leavePie" viewBox="0 0 200 200" class="pie"></svg>
+            <div class="pie-center">
+              <div class="pie-num" id="pieUsed">0</div>
+              <div class="pie-label">van <span id="pieTotal">0</span> u</div>
+            </div>
+          </div>
+          <div class="pie-legend">
+            <div><span class="dot" style="background:var(--indigo)"></span>Opgenomen</div>
+            <div><span class="dot" style="background:var(--warm-grey)"></span>Resterend</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Recent ingevoerd</span>
+        </div>
+        <ul id="recentList" class="entry-list"></ul>
+      </div>
+    </section>
+
+    <!-- INVOER -->
+    <section id="tab-invoer" class="panel">
+      <form id="hoursForm" class="form-row">
+        <div class="form-field">
+          <label>Datum</label>
+          <input type="date" id="hDate" required />
+        </div>
+        <div class="form-field">
+          <label>Uren</label>
+          <input type="number" id="hHours" step="0.25" min="0" placeholder="8" required />
+        </div>
+        <div class="form-field grow">
+          <label>Notitie</label>
+          <input type="text" id="hNote" placeholder="Waar heb je aan gewerkt?" />
+        </div>
+        <button type="submit">
+          <span>Toevoegen</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+
+      <div class="grid-2">
+        <div class="block">
+          <div class="block-head">
+            <span class="block-label">Overzicht per week</span>
+          </div>
+          <div id="weekSummary"></div>
+        </div>
+        <div class="block">
+          <div class="block-head">
+            <span class="block-label">Recente invoer</span>
+          </div>
+          <ul id="hoursList" class="entry-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- VERLOF -->
+    <section id="tab-verlof" class="panel">
+      <form id="leaveForm" class="form-row">
+        <div class="form-field">
+          <label>Datum</label>
+          <input type="date" id="lDate" required />
+        </div>
+        <div class="form-field">
+          <label>Uren</label>
+          <input type="number" id="lHours" step="0.25" min="0" placeholder="8 = 1 dag" required />
+        </div>
+        <div class="form-field grow">
+          <label>Reden</label>
+          <input type="text" id="lNote" placeholder="Vakantie, ziek, etc." />
+        </div>
+        <button type="submit">
+          <span>Opnemen</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </form>
+
+      <div class="stats-dark">
+        <div class="stat">
+          <div class="stat-value"><span id="vTotal">0</span><span class="suffix">u</span></div>
+          <div class="stat-label">Totaal dit jaar</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span id="vUsed">0</span><span class="suffix">u</span></div>
+          <div class="stat-label">Opgenomen</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span id="vLeft">0</span><span class="suffix">u</span></div>
+          <div class="stat-label">Resterend</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Verlofhistorie</span>
+        </div>
+        <ul id="leaveList" class="entry-list"></ul>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section id="tab-team" class="panel">
+      <div class="team-grid" id="teamGrid"></div>
+
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Uren per week — per vennoot</span>
+          <span class="block-hint">Laatste 8 weken</span>
+        </div>
+        <div id="teamChart" class="chart chart-grouped"></div>
+        <div class="team-legend" id="teamLegend"></div>
+      </div>
+
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Saldo vergelijking</span>
+        </div>
+        <div id="teamSaldoBars" class="saldo-bars"></div>
+      </div>
+    </section>
+
+    <!-- INSTELLINGEN -->
+    <section id="tab-instellingen" class="panel">
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Vennoten</span>
+        </div>
+        <div id="userSettings"></div>
+      </div>
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Algemeen</span>
+        </div>
+        <div class="row">
+          <span>Startdatum saldo-berekening</span>
+          <input type="date" id="setStart" />
+        </div>
+        <div class="row">
+          <span>Verlof telt als gewerkte uren tot norm</span>
+          <label class="switch">
+            <input type="checkbox" id="setLeaveCounts" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button id="saveSettings">
+          <span>Instellingen opslaan</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+      <div class="block">
+        <div class="block-head">
+          <span class="block-label">Data exporteren</span>
+        </div>
+        <a href="/api/export" class="btn-link">
+          <span>Download CSV</span>
+          <span class="btn-arrow">↓</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>Agensea © <span id="year"></span></div>
+    <div>Uren- & Verlofregistratie</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
