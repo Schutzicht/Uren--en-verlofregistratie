@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=4" />
 </head>
 <body>
   <!-- Mesh background blobs -->
@@ -107,6 +107,55 @@
           <span class="block-label">Recent ingevoerd</span>
         </div>
         <ul id="recentList" class="entry-list"></ul>
+      </div>
+
+      <div class="block rules-block">
+        <div class="block-head">
+          <span class="block-label">Spelregels</span>
+          <span class="block-hint">Afgesproken met de vennoten</span>
+        </div>
+        <div class="rules-grid">
+          <div class="rule">
+            <div class="rule-icon">◷</div>
+            <div class="rule-title">Weeknorm: 30 uur</div>
+            <div class="rule-text">Iedere vennoot werkt 30 uur per week als richtlijn. Meer of minder mag — het saldo houdt het verschil bij.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">✦</div>
+            <div class="rule-title">Lopende week straft niet af</div>
+            <div class="rule-text">In de huidige week telt alleen <em>overwerk</em> mee in je saldo. Pas als de week is afgerond komen minuren erbij.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">✈</div>
+            <div class="rule-title">Verlof: 150 uur per jaar</div>
+            <div class="rule-text">5× de weeknorm (= 18¾ dagen van 8u). In het startjaar pro-rata vanaf de startdatum. Nieuw jaar → automatisch weer vol.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">🎉</div>
+            <div class="rule-title">Feestdagen automatisch vrij</div>
+            <div class="rule-text">Nederlandse feestdagen (Pasen, Koningsdag, Hemelvaart, Pinksteren, Kerst…) tellen automatisch als 8 gewerkte uren op jouw werkdagen. Geen invoer nodig.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">◉</div>
+            <div class="rule-title">Werkdag = 8 uur</div>
+            <div class="rule-text">Een vrije dag of feestdag is altijd 8 uur, ongeacht weeknorm of werkrooster. Extra uren boek je gewoon normaal in.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">◑</div>
+            <div class="rule-title">Verlof telt mee tot de norm</div>
+            <div class="rule-text">Een dag verlof (8u) telt als gewerkte uren voor je weeknorm. Zo word je niet gestraft voor vrij nemen.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">◈</div>
+            <div class="rule-title">Vaste werkdagen (optioneel)</div>
+            <div class="rule-text">Je kunt in de instellingen je vaste werkdagen aangeven. Feestdagen op jouw werkdagen → credit. Feestdagen op je vrije dagen → geen credit.</div>
+          </div>
+          <div class="rule">
+            <div class="rule-icon">◐</div>
+            <div class="rule-title">Alleen jij bewerkt je eigen uren</div>
+            <div class="rule-text">Iedereen kan elkaars dashboard inzien voor transparantie, maar alleen jezelf kan uren/verlof toevoegen of verwijderen.</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -257,6 +306,6 @@
     <div>Uren- & Verlofregistratie</div>
   </footer>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

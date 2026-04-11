@@ -1003,6 +1003,56 @@ body.readonly .switch { pointer-events: none; opacity: 0.5; }
   margin-left: 6px;
 }
 
+/* Spelregels block */
+.rules-block {
+  background: var(--cream-dark);
+}
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.rule {
+  background: var(--cream);
+  border: 1px solid var(--warm-grey);
+  border-radius: 20px;
+  padding: 22px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rule:hover {
+  border-color: var(--dark);
+  transform: translateY(-2px);
+}
+.rule-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--dark);
+  color: var(--cream);
+  border-radius: 12px;
+  font-size: 18px;
+  margin-bottom: 14px;
+}
+.rule-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.rule-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.rule-text em {
+  color: var(--indigo);
+  font-style: normal;
+  font-weight: 600;
+}
+
 /* Workday toggles */
 #userSettings .user-edit {
   grid-template-columns: 60px 1fr 110px 110px 200px;
